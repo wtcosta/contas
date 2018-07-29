@@ -1,0 +1,226 @@
+<div class="page-title">
+	<div class="title_left" style="margin-bottom: 15px;width: 25%;">
+		<h2>Lista de boletos</h2>
+	</div>
+</div>
+<div class="row tile_count relatBoleto">
+	<div class="tile_stats_count">
+		<span class="count_top"><i class="fa fa-user"></i> Total</span>
+		<div class="count">
+			<?php echo number_format($view_relatorio->total, 2, ",", ".") ?>
+		</div>
+		<span class="count_bottom"><i class="green">100% </i> dos boletos gerados</span>
+	</div>
+	<div class="tile_stats_count">
+		<span class="count_top"><i class="fa fa-user"></i> Pagos</span>
+		<div class="count">
+			<?php echo number_format($view_relatorio->pagos, 2, ",", ".") ?>
+		</div>
+		<span class="count_bottom">
+			<i class="green">
+				<i class="fa fa-sort-asc"></i> <?php echo number_format($view_relatorio->pagos*100/$view_relatorio->total, 0) ?>%
+			</i> dos boletos pagos
+		</span>
+	</div>
+	<div class="tile_stats_count">
+		<span class="count_top"><i class="fa fa-user"></i> Pendentes</span>
+		<div class="count green">
+			<?php echo number_format($view_relatorio->pendentes, 2, ",", ".") ?>
+		</div>
+		<span class="count_bottom">
+			<i class="red"><i class="fa fa-sort-desc">
+			</i><?php echo number_format($view_relatorio->pendentes*100/$view_relatorio->total, 0) ?>% </i> dos boletos pendentes
+		</span>
+	</div>
+	<div class="tile_stats_count">
+		<span class="count_top"><i class="fa fa-user"></i> Vencidos</span>
+		<div class="count">
+			<?php echo number_format($view_relatorio->vencidos, 2, ",", ".") ?>
+		</div>
+		<span class="count_bottom">
+			<i class="red"><i class="fa fa-sort-desc">
+			</i><?php echo number_format($view_relatorio->vencidos*100/$view_relatorio->total, 0) ?>% </i> dos boletos vencidos
+		</span>
+	</div>
+	<div class="tile_stats_count">
+		<span class="count_top"><i class="fa fa-user"></i> Estornado</span>
+		<div class="count">
+			<?php echo number_format($view_relatorio->estornados, 2, ",", ".") ?>
+		</div>
+		<span class="count_bottom">
+			<i class="green"><i class="fa fa-sort-asc">
+			</i><?php echo number_format($view_relatorio->estornados*100/$view_relatorio->total, 0) ?>% </i> dos boletos estornados
+		</span>
+	</div>
+</div>
+<div class="clearfix"></div>
+<div class="panel-body">
+	<table class="table" id="tableFull">
+		<thead>
+			<tr>
+				<th>Cliente</th>
+				<th>Atendente</th>
+				<th style="width: 60px">Data</th>
+				<th>Valor</th>
+				<th>Status</th>
+				<th>Vencimento</th>
+				<th style="width: 30px"></th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php
+			if ($view_boletos) :
+				foreach ($view_boletos as $boleto) :
+					switch ($boleto->status) {
+						case 'PENDING':
+						$bgBoleto = '#ffeb001c';
+						break;
+						case 'CONFIRMED':
+						$bgBoleto = '#1bff002e';
+						break;
+						case 'RECEIVED':
+						$bgBoleto = '#1bff002e';
+						break;
+						case 'OVERDUE':
+						$bgBoleto = '#fb000014';
+						break;
+						case 'REFUNDED':
+						$bgBoleto = 'REFUNDED';
+						break;
+
+						default:
+						$bgBoleto = '#ffeb001c';
+						break;
+					}
+					?>
+					<tr style="background: <?php echo $bgBoleto ?>">
+						<td>
+							<?php echo Client::find_by_id($boleto->cliente_id)->nome; ?>
+						</td>
+						<td>
+							<?php
+							$atd = Call::find_by_id($boleto->atendimento_id)->user_id;
+							echo User::find_by_id($atd)->name;
+							?>
+						</td>
+						<td>
+							<?php echo $boleto->data_criacao; ?>
+						</td>
+						<td>
+							R$ <?php echo number_format($boleto->valor, 2, ",", "."); ?>
+						</td>
+						<td>
+							<?php echo Payment::status($boleto->status); ?>
+						</td>
+						<td>
+							<?php echo $boleto->vencimento; ?>
+						</td>
+						<td>
+							<p class="btnBoleto">
+								<a href="<?php echo $boleto->boleto; ?>" target="_blank">
+									<img class="img-responsive" src="/public/img/icone-lupa.png" alt="Visualizar">
+								</a>
+								<!--<a href="" data-toggle="modal" data-target="#modaledit<?php echo $boleto->id ?>">
+									<img class="img-responsive" src="/public/img/icone-editar.png" alt="editar">
+								</a>-->
+								<a href="" data-toggle="modal" data-target="#modalExclusao<?php echo $boleto->id ?>">
+									<img class="img-responsive" src="/public/img/icone-excluir.png" alt="excluir">
+								</a>
+							</p>
+							<div class="modal fade bd-example-modal-lg" id="modaledit<?php echo $boleto->id ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+								<div class="modal-dialog modal-lg" role="document">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h3 class="modal-title">Editar Boleto</h3>
+										</div>
+										<div class="modal-body">
+											<?php
+											$action = BASE . 'boleto/atualizar/'.$boleto->id;
+											$values = [
+												'pagamento_id' => $boleto->pagamento_id,
+												'valor' => $boleto->valor,
+												'vencimento' => $boleto->vencimento
+											];
+											Form::open('cadastrarsequencia', $values, [
+												'action' => $action,
+												'enctype' => 'multipart/form-data',
+												'prevent' => [
+													'focus'
+												]
+											]);
+											Form::Textbox(
+												'ID Boleto:',
+												'pagamento_id',
+												array(
+													'disabled' => true
+												)
+											);
+											Form::Number(
+												'Valor:',
+												'valor'
+											);
+											Form::Date(
+												"Vencimento",
+												"vencimento"
+											);
+											Form::Button('Salvar', 'submit', [
+												'style' => 'width: 65%;float:  right;',
+												'class' => 'btn-success'
+											]);
+											Form::close(false);
+											?>
+										</div>
+										<div class="modal-footer">
+											<button type="button" class="btn btn-secondary" data-dismiss="modal">
+												Fechar
+											</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="modal fade bd-example-modal-lg" id="modalExclusao<?php echo $boleto->id ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+								<div class="modal-dialog modal-lg" role="document">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h3 class="modal-title">Tem certeza que deseja excluir?</h3>
+										</div>
+										<div class="modal-body">
+											<h2>
+												<b>Cliente: </b>
+												<?php echo Client::find_by_id($boleto->cliente_id)->nome; ?>
+											</h2>
+											<h4>
+												<b>Valor: </b>
+												R$ <?php echo number_format($boleto->valor, 2, ",", "."); ?>
+												<br />
+												<b>Vencimento: </b>
+												<?php echo $boleto->vencimento; ?>
+												<br />
+												<b>Atendente: </b>
+												<?php
+												$atd = Call::find_by_id($boleto->atendimento_id)->user_id;
+												echo User::find_by_id($atd)->name;
+												?>
+											</h4>
+											<form action="<?php echo BASE ?>boleto/excluir/<?php echo $boleto->pagamento_id ?>" method="POST" style="margin: 30px 0;text-align:  center;">
+												<input type="hidden" name="boleto_id" value="<?php echo $boleto->pagamento_id ?>">
+												<input type="submit" value="Excluir Resgistro" class="btn btn-danger btn-lg">
+											</form>
+										</div>
+										<div class="modal-footer">
+											<button type="button" class="btn btn-secondary" data-dismiss="modal">
+												Fechar
+											</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</td>
+					</tr>
+					<?php
+				endforeach;
+			endif;
+			?>
+		</tbody>
+	</table>
+</div>

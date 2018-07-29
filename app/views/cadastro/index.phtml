@@ -1,0 +1,89 @@
+<div class="page-title">
+  <div class="title_left">
+    <h2>Cadastro de usuário</h2>
+  </div>
+</div>
+<div class="clearfix"></div>
+<div class="panel-body">
+  <?php
+  if (isset($view_user)) {
+    $action = BASE . 'cadastro/editar/'.$view_user->id;
+    $values = [
+      'name' => $view_user->name,
+      'email' => $view_user->email,
+      'username' => $view_user->username,
+      'password' => '',
+      'role_id' => $view_user->role_id,
+      'cor' => $view_user->cor
+    ];
+  }else{
+    $action = BASE . 'cadastro';
+    $values = [
+      'name' => $this->request->post('name'),
+      'email' => $this->request->post('email'),
+      'username' => $this->request->post('username'),
+      'password' => $this->request->post('password'),
+      'role_id' => $this->request->post('role_id'),
+      'cor' => $this->request->post('cor')
+    ];
+  }
+  Form::open('cadastrarsequencia', $values, [
+    'action' => $action,
+    'enctype' => 'multipart/form-data',
+    'style' => 'float:  left;width: 500px;',
+    'prevent' => [
+      'focus'
+    ]
+  ]);
+  Form::Textbox(
+    'Nome:',
+    'name',
+    array(
+      'required' => 1
+    )
+  );
+  Form::Email(
+    'Email:',
+    'email',
+    array(
+      'required' => 1
+    )
+  );
+  Form::Textbox(
+    'Usuário:',
+    'username',
+    array(
+      'required' => 1
+    )
+  );
+  Form::Password(
+    'Senha:',
+    'password'
+  );
+  Form::Color(
+    'Cor:',
+    'cor'
+  );
+  $nivels = Role::all();
+  $options = array(0=>'Selecione o nível abaixo');
+  foreach ($nivels as $nivel) {
+    $options[$nivel->id] = $nivel->role;
+  }
+  Form::Select(
+    "Nível",
+    "role_id",
+    $options,
+    array(
+      'required' => 1,
+      'class' => 'selectpicker',
+      'data-live-search' => 'true'
+    )
+  );
+  Form::Button('Salvar', 'submit', [
+    'style' => 'width: 65%;float:  right;',
+    'class' => 'btn-success'
+  ]);
+  Form::close(false);
+  ?>
+
+</div>

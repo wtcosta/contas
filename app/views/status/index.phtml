@@ -1,0 +1,120 @@
+<div class="page-title">
+	<div class="title_left">
+		<h2>Status</h2>
+	</div>
+</div>
+<div class="clearfix"></div>
+<div class="panel-body">
+	<div class="col-md-7">
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Tipo</th>
+					<th>Nome</th>
+					<th>Ações</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php
+				if ($view_status){
+					foreach ($view_status as $status){
+						if ($status->relacionamento) {
+							$statusSub[$status->relacionamento][] = $status;
+						}else{
+							$statusPrincipal[] = $status;
+						}
+					}
+					foreach ($statusPrincipal as $status){
+						?>
+						<tr>
+							<td><?php echo ($status->tipo == 1) ? 'Dívida' : 'Atd' ?></td>
+							<td style="width: 425px;font-weight: 700;"><?php echo $status->nome ?></td>
+							<td style="width: 160px;padding-left: 0;">
+								<a href="<?php echo BASE.'status/editar/'.$status->id ?>" class="btn btn-warning btn-sm">Editar</a>
+								<a href="<?php echo BASE.'status/excluir/'.$status->id ?>" class="btn btn-danger btn-sm">Excluir</a>
+							</td>
+						</tr>
+						<?php
+						if (isset($statusSub[$status->id])) {
+							foreach ($statusSub[$status->id] as $key => $statusSubList) {
+								?>
+								<tr class="sub">
+									<td style="text-align: center;"> - </td>
+									<td colspan="3">
+										<table style="width: 100%">
+											<tr>
+												<td><?php echo ($statusSubList->tipo == 1) ? 'Dívida' : 'Atendimento' ?></td>
+												<td style="width: 345px;padding-left: 20px;"><?php echo $statusSubList->nome ?></td>
+												<td style="width: 160px">
+													<a href="<?php echo BASE.'status/editar/'.$statusSubList->id ?>" class="btn btn-warning btn-sm">Editar</a>
+													<a href="<?php echo BASE.'status/excluir/'.$statusSubList->id ?>" class="btn btn-danger btn-sm">Excluir</a>
+												</td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+								<?php
+							}
+						}
+					}
+				}
+				?>
+			</tbody>
+		</table>
+	</div>
+	<div class="col-md-5">
+		<h4 style="text-align: center;margin-bottom: 25px;">Adicionar novo status</h4>
+		<?php
+		if (isset($view_statusForm)) {
+			$action = BASE . 'status/atualizar/'.$view_statusForm->id;
+			$values = [
+				'tipo' => $view_statusForm->tipo,
+				'nome' => $view_statusForm->nome
+			];
+		}else{
+			$action = BASE . 'status/cadastrar/';
+			$values = [
+				'tipo' => $this->request->post('tipo'),
+				'nome' => $this->request->post('nome')
+			];
+		}
+		Form::open('cadastrarstatus', $values, [
+			'action' => $action,
+			'enctype' => 'multipart/form-data',
+			'prevent' => [
+				'focus'
+			]
+		]);
+		Form::Hidden(
+			"tipo",
+			"1"
+		);
+		$status = State::busca(0);
+		$optionDivida = array('0' => 'Selecione o status da dívida correspondente');
+		if (count($status) < 1) {
+			$optionDivida[0] = 'Nenhum status de dívida informada';
+		}else{
+			foreach ($status as $stat) {
+				$optionDivida[$stat->id] = $stat->nome;
+			}
+		}
+		Form::Select(
+			"Status da dívida",
+			"relacionamento",
+			$optionDivida
+		);
+		Form::Textbox(
+			'Nome:',
+			'nome',
+			array(
+				'required' => 1
+			)
+		);
+		Form::Button('Salvar', 'submit', [
+			'style' => 'width: 65%;float:  right;',
+			'class' => 'btn-success'
+		]);
+		Form::close(false);
+		?>
+	</div>
+</div>
