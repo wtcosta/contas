@@ -1,0 +1,17 @@
+<div class="page-title">
+	<div class="title_left">
+		<h2>Home</h2>
+	</div>
+</div>
+<div class="clearfix"></div>
+<div class="panel-body">
+    <?php
+    $this->partial('message', array(
+        'msg' => 'Uhull! Você foi autenticado com sucesso!'
+    ));
+    ?>
+    <p>
+        Olá <?php echo $view_user->name ?>, seja bem vindo(a). <br />
+        <a href="<?php echo BASE; ?>login/sair" class="btn btn-danger">Sair</a>
+    </p>
+</div>

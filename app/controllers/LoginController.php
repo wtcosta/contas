@@ -25,6 +25,8 @@ class LoginController extends \HXPHP\System\Controller
 
 	public function logarAction()
 	{
+		$this->auth->redirectCheck(true);
+
 		$this->view->setFile('index');
 
 		$post = $this->request->post();

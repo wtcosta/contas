@@ -8,11 +8,14 @@ class User extends \HXPHP\System\Model
 	static $belongs_to = array(
 		array('role')
 	);
-
 	static $validates_presence_of = array(
 		array(
 			'name',
 			'message' => 'O nome é um campo obrigatório.'
+		),
+		array(
+			'email',
+			'message' => 'O e-mail é um campo obrigatório.'
 		),
 		array(
 			'username',
@@ -28,6 +31,10 @@ class User extends \HXPHP\System\Model
 		array(
 			'username',
 			'message' => 'Já existe um usuário cadastrado!'
+		),
+		array(
+			'email',
+			'message' => 'Já existe um e-mail cadastrado!'
 		)
 	);
 
@@ -39,7 +46,14 @@ class User extends \HXPHP\System\Model
 		$callbackObj->status = false;
 		$callbackObj->errors = array();
 
+		//Recupera o role_id de user
+		$role = Role::find_by_role('User');
+		if (is_null($role)) {
+			array_push($callbackObj->errors, 'A role user não existe. Contato o administrator');
+			return $callbackObj;
+		}
 		$user_data = array(
+			'role_id' => $role->id,
 			'status' => 1
 		);
 
@@ -55,7 +69,6 @@ class User extends \HXPHP\System\Model
 		if ($cadastrar->is_valid()) {
 			$callbackObj->user = $cadastrar;
 			$callbackObj->status = true;
-
 			return $callbackObj;
 		}
 
@@ -68,7 +81,7 @@ class User extends \HXPHP\System\Model
 		return $callbackObj;
 	}
 
-	public static function login($post)
+	public function login($post)
 	{
 		//Cria uma classe vazia pra armazenar o retorno das validações
 		$callbackObj = new \stdClass;
@@ -136,8 +149,11 @@ class User extends \HXPHP\System\Model
 		}
 
 		$user = self::find($user_id);
+
 		$user->name = $post['name'];
+
 		$user->email = $post['email'];
+
 		$user->username = $post['username'];
 
 		if (isset($post['salt'])) {

@@ -13,6 +13,11 @@ class RecuperarController extends \HXPHP\System\Controller
 			true
 		);
 
+		$this->auth->redirectCheck(true);
+
+		//Altera o titulo da views
+		$this->view->setTitle('SistemaHx - Altere sua senha');
+
 		//Carrega o modulo de mensagens
 		$this->load('Modules\Messages', 'password-recovery');
 		$this->messages->setBlock('alerts');
@@ -69,6 +74,8 @@ class RecuperarController extends \HXPHP\System\Controller
 						'remetente' => $this->configs->mail->from
 					)
 				);
+
+				var_dump($message);
 
 				if ($envioDoEmail === false) {
 					$error = $this->messages->getByCode('email-nao-enviado');

@@ -3,14 +3,7 @@
 $configs = new HXPHP\System\Configs\Config;
 ActiveRecord\Connection::$datetime_format = 'Y-m-d H:i:s';
 
-$configs->title = 'WtFinanças';
-
 $configs->env->add('development');
-
-$configs->env->development->mail->setFrom([
-  'from' => $configs->title,
-  'from_mail' => 'contato@wesleyteixeira.com.br'
-  ]);
 
 $configs->env->development->baseURI = '/contas/';
 
@@ -21,39 +14,23 @@ $configs->env->development->database->setConnectionData(array(
   'dbname' => 'wt_contas'
 ));
 
-$configs->env->development->auth->setURLs('/contas/empresa', '/contas/login');
+$configs->env->development->auth->setURLs('/contas/home/', '/contas/login');
 
 $configs->env->development->menu->setMenus(array(
-  'Administrativo/dashboard' => [
-    'Usuário/dashboard' => '%baseURI%/usuarios',
-    'Log/history' => '%baseURI%/log',
-    'Status/check-circle-o' => '%baseURI%/status',
-    'Triagem/bars' => '%baseURI%/sequencia'
-  ],
-  'Empresa/university' => '%baseURI%/empresa',
-  'Clientes/user' => '%baseURI%/cliente',
-  'Boletos/clipboard' => '%baseURI%/boleto'
+  'Home/dashboard' => '%baseURI%/home',
+  'Editar Perfil/cog' => '%baseURI%/perfil/editar',
+  'Sair/sign-out' => '%baseURI%/login/sair'
+), 'user');
+
+$configs->env->development->menu->setMenus(array(
+  'Home/dashboard' => '%baseURI%/home',
+  'Usuário/user' => '%baseURI%/usuarios',
+  'Sair/sign-out' => '%baseURI%/login/sair'
 ), 'administrator');
 
 $configs->env->development->menu->setMenus(array(
-  'Cliente/user' => '%baseURI%/cliente'
-), 'cobrança');
-
-$configs->env->development->menu->setMenus(array(
-  'Cliente/user' => '%baseURI%/cliente'
-), 'extrajudicial');
-
-$configs->env->development->menu->setMenus(array(
-  'Cliente/user' => '%baseURI%/cliente'
-), 'juridico');
-
-$configs->env->development->menu->setMenus(array(
-  'Cliente/user' => '%baseURI%/cliente'
-), 'empresa');
-
-$configs->env->development->menu->setMenus(array(
-  'Cliente/user' => '%baseURI%/cliente'
-), 'cliente');
+  'Home/dashboard' => '%baseURI%/home'
+));
 
 $configs->env->development->menu->setConfigs([
     'container_class' => 'menu_section active',
@@ -122,4 +99,4 @@ $configs->env->development->menu->setConfigs([
   ]);
  */
 
-  return $configs;
+return $configs;

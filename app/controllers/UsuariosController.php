@@ -12,6 +12,11 @@ class UsuariosController extends \HXPHP\System\Controller
 			true
 		);
 
+		$this->auth->redirectCheck();
+		$this->auth->roleCheck(array(
+			'administrator'
+		));
+
 		$user_id = $this->auth->getUserId();
 		$user = User::find($user_id);
 		$role = Role::find($user->role_id);
@@ -23,26 +28,7 @@ class UsuariosController extends \HXPHP\System\Controller
 			$role->role
 		);
 
-		$this->view
-		->setFile('index')
-		->setVars([
-			'user' => $user,
-			'users' => User::all()
-		]);
-	}
-
-	public function editadoAction($value='')
-	{
-		$user_id = $this->auth->getUserId();
-		$user = User::find($user_id);
-		$role = Role::find($user->role_id);
-
-		$this->load('Helpers\Alert', array(
-			'success',
-			'Usuário editado com sucesso!'
-		));
-
-		$this->view
+		$this->view->setTitle('HXPHP - Administrativo')
 		->setFile('index')
 		->setVars([
 			'user' => $user,
@@ -80,23 +66,14 @@ class UsuariosController extends \HXPHP\System\Controller
 
 	public function excluirAction($user_id)
 	{
-		$empresa = Company::find(array('conditions' => array('idUserEmpresa = ?', $user_id)));
-		if (is_numeric($user_id) && @!$empresa->id) {
+		if (is_numeric($user_id)) {
 			$user = User::find_by_id($user_id);
+
 			if (!is_null($user)) {
-				$this->load('Helpers\Alert', array(
-					'success',
-					'Usuário excluido com sucesso!'
-				));
 				$user->delete();
+
 				$this->view->setVar('users', User::all());
 			}
-		}else{
-			$this->load('Helpers\Alert', array(
-				'danger',
-				'Usário não pode ser excluido!<br />Verifique se ele não está associado a uma empresa.'
-			));
-			$this->view->setVar('users', User::all());
 		}
 	}
 }

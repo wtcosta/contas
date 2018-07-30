@@ -1,21 +1,10 @@
-<div class="page-title">
-	<div class="title_left" style="margin-bottom: 15px;">
-		<h2>Lista de usuários</h2>
-	</div>
-	<div style="float:  right;padding-top: 10px;width: 15%">
-		<a href="<?php echo BASE ?>cadastro" style="float: left;" class="btn btn-info">
-			ADICIONAR USUÁRIO
-		</a>
-	</div>
-</div>
-<div class="clearfix"></div>
 <div class="panel-body">
-	<table class="table" id="tableFull">
+	<table class="table">
 		<thead>
 			<tr>
 				<th>Nome</th>
 				<th>E-mail</th>
-				<th>Nível</th>
+				<th>Login</th>
 				<th>Ações</th>
 			</tr>
 		</thead>
@@ -25,33 +14,28 @@
 				foreach ($view_users as $user) :
 					?>
 					<tr>
-						<td><?php echo $user->name ?> (<?php echo $user->username ?>)</td>
+						<td><?php echo $user->name ?></td>
 						<td><?php echo $user->email ?></td>
-						<td><?php echo $user->role->role; ?></td>
+						<td><?php echo $user->username ?></td>
 						<td>
-							<p class="iconesUser">
-								<a href="<?php echo BASE.'cadastro/editar/'.$user->id ?>" class="">
-									<img class="img-responsive" src="<?php echo IMG; ?>icone-editar.png" alt="editar" title="Editar">
+							<?php
+							if ($user->status === 0) {
+								?>
+								<a href="<?php echo BASE.'usuarios/desbloquear/'.$user->id ?>" class="btn btn-xs btn-success">
+									<i class="fa fa-pencil"></i> Desbloquear
 								</a>
 								<?php
-								if ($user->status === 0) {
-									?>
-									<a href="<?php echo BASE.'usuarios/desbloquear/'.$user->id ?>" class="">
-										<img class="img-responsive" src="<?php echo IMG; ?>icone-bloqueado.png" alt="Bloqueado" title="Bloqueado">
-									</a>
-									<?php
-								}else{
-									?>
-									<a href="<?php echo BASE.'usuarios/bloquear/'.$user->id ?>" class="">
-										<img class="img-responsive" src="<?php echo IMG; ?>icone-desbloqueado.png" alt="Desbloqueado" title="Desbloqueado">
-									</a>
-									<?php
-								}
+							}else{
 								?>
-								<a href="<?php echo BASE.'usuarios/excluir/'.$user->id ?>" class="">
-									<img class="img-responsive" src="<?php echo IMG; ?>icone-excluir.png" alt="excluir" title="Excluir">
+								<a href="<?php echo BASE.'usuarios/bloquear/'.$user->id ?>" class="btn btn-xs btn-warning">
+									<i class="fa fa-pencil"></i> Bloquear
 								</a>
-							</p>
+								<?php
+							}
+							?>
+							<a href="<?php echo BASE.'usuarios/excluir/'.$user->id ?>" class="btn btn-xs btn-danger">
+								<i class="fa fa-pencil"></i> Excluir
+							</a>
 						</td>
 					</tr>
 					<?php
