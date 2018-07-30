@@ -17,15 +17,14 @@ $configs->env->development->database->setConnectionData(array(
 $configs->env->development->auth->setURLs('/contas/home/', '/contas/login');
 
 $configs->env->development->menu->setMenus(array(
-  'Home/dashboard' => '%baseURI%/home',
-  'Editar Perfil/cog' => '%baseURI%/perfil/editar',
-  'Sair/sign-out' => '%baseURI%/login/sair'
-), 'user');
-
-$configs->env->development->menu->setMenus(array(
-  'Home/dashboard' => '%baseURI%/home',
-  'Usuário/user' => '%baseURI%/usuarios',
-  'Sair/sign-out' => '%baseURI%/login/sair'
+  'Home/home' => '%baseURI%/home',
+  'Administrativo/dashboard' => [
+    'Usuário/user' => '%baseURI%/usuarios',
+    'Categorias/th-list' => '%baseURI%/category',
+    'Pagamentos/credit-card' => '%baseURI%/payment',
+    'Recorrencias/circle-o-notch' => '%baseURI%/recurrence'
+  ],
+  'Movimentação/money' => '%baseURI%/movement'
 ), 'administrator');
 
 $configs->env->development->menu->setMenus(array(
@@ -33,10 +32,10 @@ $configs->env->development->menu->setMenus(array(
 ));
 
 $configs->env->development->menu->setConfigs([
-    'container_class' => 'menu_section active',
-    'menu_class' => 'nav side-menu',
-    'menu_item_active_class' => 'active',
-    'dropdown_class' => 'nav child_menu',
+  'container_class' => 'menu_section active',
+  'menu_class' => 'nav side-menu',
+  'menu_item_active_class' => 'active',
+  'dropdown_class' => 'nav child_menu',
 ]);
 
 /*
@@ -99,4 +98,4 @@ $configs->env->development->menu->setConfigs([
   ]);
  */
 
-return $configs;
+  return $configs;
