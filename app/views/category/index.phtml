@@ -1,11 +1,71 @@
-<div class="page-title">
-	<div class="title_left">
-		<h2>Home</h2>
-	</div>
-</div>
-<div class="clearfix"></div>
 <div class="panel-body">
-    <p>
-        Olá <?php echo $view_user->name ?>, você está na view da categoria.
-    </p>
+	<div class="col-sm-6">
+		<div class="page-title">
+			<div class="title_left">
+				<h2>Categorias</h2>
+			</div>
+		</div>
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Id</th>
+					<th>Nome</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php
+				if ($view_categorias) :
+					foreach ($view_categorias as $categoria) :
+						?>
+						<tr>
+							<td><?php echo $categoria->id ?></td>
+							<td><?php echo $categoria->nome ?></td>
+						</tr>
+						<?php
+					endforeach;
+				endif;
+				?>
+			</tbody>
+		</table>
+	</div>
+	<div class="col-sm-6">
+		<div class="page-title">
+			<div class="title_left">
+				<h2>Cadastro</h2>
+			</div>
+		</div>
+		<?php
+		if (isset($view_categoria)) {
+			$action = BASE . 'category/editar/'.$view_categoria->id;
+			$values = [
+				'nome' => $view_categoria->nome
+			];
+		}else{
+			$action = BASE . 'category/cadastrar';
+			$values = [
+				'nome' => $this->request->post('nome')
+			];
+		}
+		Form::open('categoria', $values, [
+			'action' => $action,
+			'enctype' => 'multipart/form-data',
+			'style' => '',
+			'prevent' => [
+				'focus'
+			]
+		]);
+		Form::Textbox(
+			'Nome:',
+			'nome',
+			array(
+				'required' => 1
+			)
+		);
+		Form::Button('Salvar', 'submit', [
+			'style' => 'width: 65%;float:  right;',
+			'class' => 'btn-success'
+		]);
+		Form::close(false);
+		?>
+	</div>
 </div>
