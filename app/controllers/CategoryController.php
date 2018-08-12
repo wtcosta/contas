@@ -1,7 +1,7 @@
 <?php
 class CategoryController extends \HXPHP\System\Controller
 {
-    public function __construct($configs)
+	public function __construct($configs)
 	{
 		parent::__construct($configs);
 
@@ -30,6 +30,26 @@ class CategoryController extends \HXPHP\System\Controller
 		->setVar('categorias', Category::all());
 	}
 
+	/**
+	 * Function para tratar retorno
+	 *
+	 * $tipo - 'danger', 'success', 'alert'
+	 * $msn - 'mensagem a ser exibida'
+	 * @var string
+	 **/
+	public function resultAction($tipo='', $msn='')
+	{
+		$this->load('Helpers\Alert', array(
+			$tipo,
+			urldecode($msn)
+		));
+
+		//Redireciona para uma view
+		$this->view
+		->setFile('index')
+		->setVar('categorias', Category::all());
+	}
+
 	public function cadastrarAction()
 	{
 		//Redireciona para uma view
@@ -41,41 +61,12 @@ class CategoryController extends \HXPHP\System\Controller
 		if (!empty($post)) {
 			$cadCategoria = Category::cadastrar($post);
 			if ($cadCategoria->status === false) {
-				$this->load('Helpers\Alert', array(
-					'danger',
-					'Ops! Não foi possível efetuar seu cadastro.<br />Verifique os erros abaixo:',
-					$cadCategoria->errors
-				));
+				$msnErro = 'Ops! Não foi possível efetuar seu cadastro.<br />Verifique os erros abaixo:<br />'.
+					$cadCategoria->errors;
+				$this->redirectTo($this->configs->baseURI.'category/result/danger/'.urlencode($msnErro));
 			}else{
-				$this->load('Helpers\Alert', array(
-					'success',
-					'Cadastro realizado com sucesso!'
-				));
-				$this->view
-				->setVar('categorias', Category::all());
+				$this->redirectTo($this->configs->baseURI.'category/result/success/Cadastro realizado com sucesso!');
 			}
 		}
-	}
-
-	public function editarAction($cat)
-	{
-		$post = $this->request->post();
-
-		if (!empty($post)) {
-			$atualizarCad = Category::atualizar($cat, $post);
-
-			if ($atualizarCad->status === false) {
-				$this->load('Helpers\Alert', array(
-					'danger',
-					'Ops! Não foi possível editar o cadastro. <br> Verifique os erros abaixo:',
-					$atualizarCad->errors
-				));
-			}else{
-				$this->redirectTo($this->configs->baseURI.'usuarios/editado');
-			}
-		}
-
-		$this->view
-		->setVar('categorias', Category::all());
 	}
 }

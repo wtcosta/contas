@@ -1,7 +1,7 @@
 <?php
-class MovementController extends \HXPHP\System\Controller
+class DiariasController extends \HXPHP\System\Controller
 {
-    public function __construct($configs)
+	public function __construct($configs)
 	{
 		parent::__construct($configs);
 
@@ -25,7 +25,8 @@ class MovementController extends \HXPHP\System\Controller
 			$role->role
 		);
 
-		$this->view->setTitle('WtContas - Categorias')
-					->setVar('user', $user);
+		$this->view
+		->setTitle('WtContas - Diarias')
+		->setVar('user', $user);
 	}
 }

@@ -36,6 +36,58 @@ class UsuariosController extends \HXPHP\System\Controller
 		]);
 	}
 
+	/**
+	 * Function para tratar retorno
+	 *
+	 * $tipo - 'danger', 'success', 'alert'
+	 * $msn - 'mensagem a ser exibida'
+	 * @var string
+	 **/
+	public function resultAction($tipo='', $msn='')
+	{
+		$user_id = $this->auth->getUserId();
+		$user = User::find($user_id);
+		$role = Role::find($user->role_id);
+		
+		$this->load('Helpers\Alert', array(
+			$tipo,
+			urldecode($msn)
+		));
+
+		//Redireciona para uma view
+		$this->view
+		->setFile('index')
+		->setVars([
+			'user' => $user,
+			'users' => User::all()
+		]);
+	}
+
+	public function cadastrarAction()
+	{
+		//Redireciona para uma view
+		$this->view->setFile('index');
+
+		//Filtra/valida dados do form
+		$this->request->setCustomFilters(array(
+			'email' => FILTER_VALIDATE_EMAIL
+		));
+
+		$post = $this->request->post();
+
+		//Verifica se o POST não está vazio e chama o model
+		if (!empty($post)) {
+			$cadastrarUsuario = User::cadastrar($post);
+
+			if ($cadastrarUsuario->status === false) {
+				$mensagem = urlencode('Ops! Não foi possível efetuar seu cadastro.<br />Verifique os erros abaixo:<br />'.$cadastrarUsuario->errors);
+				$this->redirectTo($this->configs->baseURI.'usuarios/result/danger/'.$mensagem);
+			}else{
+				$this->redirectTo($this->configs->baseURI.'usuarios/result/success/Cadastro realizado com sucesso!');
+			}
+		}
+	}
+
 	public function bloquearAction($user_id)
 	{
 		if (is_numeric($user_id)) {
@@ -45,7 +97,7 @@ class UsuariosController extends \HXPHP\System\Controller
 				$user->status = 0;
 				$user->save();
 
-				$this->view->setVar('users', User::all());
+				$this->redirectTo($this->configs->baseURI.'usuarios/result/warning/Cadastro bloqueado com sucesso!');
 			}
 		}
 	}
@@ -59,7 +111,7 @@ class UsuariosController extends \HXPHP\System\Controller
 				$user->status = 1;
 				$user->save();
 
-				$this->view->setVar('users', User::all());
+				$this->redirectTo($this->configs->baseURI.'usuarios/result/success/Cadastro desbloqueado com sucesso!');
 			}
 		}
 	}
@@ -72,7 +124,7 @@ class UsuariosController extends \HXPHP\System\Controller
 			if (!is_null($user)) {
 				$user->delete();
 
-				$this->view->setVar('users', User::all());
+				$this->redirectTo($this->configs->baseURI.'usuarios/result/danger/Cadastro excluido com sucesso!');
 			}
 		}
 	}

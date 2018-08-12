@@ -24,7 +24,11 @@ $configs->env->development->menu->setMenus(array(
     'Pagamentos/credit-card' => '%baseURI%/payment',
     'Recorrencias/circle-o-notch' => '%baseURI%/recurrence'
   ],
-  'Movimentação/money' => '%baseURI%/movement'
+  'Uber/car' => [
+    'Custos/money' => '%baseURI%/custos',
+    'Diarias/line-chart' => '%baseURI%/diarias'
+  ],
+  'Contas/money' => '%baseURI%/contas'
 ), 'administrator');
 
 $configs->env->development->menu->setMenus(array(

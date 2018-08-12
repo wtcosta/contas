@@ -6,7 +6,7 @@ public static function cadastrar($post)
 	{
 		//Cria uma classe vazia pra armazenar o retorno das validações
 		$callbackObj = new \stdClass;
-		$callbackObj->user = null;
+		$callbackObj->rec = null;
 		$callbackObj->status = false;
 		$callbackObj->errors = array();
 
@@ -14,7 +14,7 @@ public static function cadastrar($post)
 		$cadastrar = self::create($post);
 
 		if ($cadastrar->is_valid()) {
-			$callbackObj->user = $cadastrar;
+			$callbackObj->rec = $cadastrar;
 			$callbackObj->status = true;
 			return $callbackObj;
 		}
