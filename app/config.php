@@ -18,17 +18,17 @@ $configs->env->development->auth->setURLs('/contas/home/', '/contas/login');
 
 $configs->env->development->menu->setMenus(array(
   'Home/home' => '%baseURI%/home',
+  'Contas/money' => '%baseURI%/contas',
+  'Uber/car' => [
+    'Custos/money' => '%baseURI%/custos',
+    'Diarias/line-chart' => '%baseURI%/diarias'
+  ],
   'Administrativo/dashboard' => [
     'Usuário/user' => '%baseURI%/usuarios',
     'Categorias/th-list' => '%baseURI%/category',
     'Pagamentos/credit-card' => '%baseURI%/payment',
     'Recorrencias/circle-o-notch' => '%baseURI%/recurrence'
-  ],
-  'Uber/car' => [
-    'Custos/money' => '%baseURI%/custos',
-    'Diarias/line-chart' => '%baseURI%/diarias'
-  ],
-  'Contas/money' => '%baseURI%/contas'
+  ]
 ), 'administrator');
 
 $configs->env->development->menu->setMenus(array(

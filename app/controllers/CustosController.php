@@ -27,6 +27,6 @@ class CustosController extends \HXPHP\System\Controller
 
 		$this->view
 		->setTitle('WtContas - Custos')
-		->setVar('user', $user);
+		->setVar('custos', Cost::All());
 	}
 }

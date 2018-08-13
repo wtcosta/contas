@@ -27,6 +27,6 @@ class DiariasController extends \HXPHP\System\Controller
 
 		$this->view
 		->setTitle('WtContas - Diarias')
-		->setVar('user', $user);
+		->setVar('diarias', Everyday::All());
 	}
 }
